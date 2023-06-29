@@ -1,6 +1,6 @@
 export class Item {
     name: string;
-    sellIn: number; //Days to sell
+    sellIn: number;
     quality: number;
 
     constructor(name, sellIn, quality) {
@@ -24,56 +24,44 @@ export class GildedRose {
 
         //Changing Quality
         for (let i = 0; i < this.items.length; i++) {
-            //The quality gets better over time
-            if (this.items[i].name != 'Aged Brie' && this.items[i].name != 'Backstage passes to a TAFKAL80ETC concert') {
-                if (this.items[i].quality > 0) {
-                    if (this.items[i].name != 'Sulfuras, Hand of Ragnaros') { //Quality never changes
-                        this.items[i].quality = this.items[i].quality - 1 //If not any of these quality goes down
-                    }
-                }
-            } else {
-                //If ages brie or backstage pass
-                if (this.items[i].quality < 50) { //Max quality == 50
-                    this.items[i].quality = this.items[i].quality + 1
-                    if (this.items[i].name == 'Backstage passes to a TAFKAL80ETC concert') {
-                        if (this.items[i].sellIn < 11) {
-                            if (this.items[i].quality < 50) {
-                                this.items[i].quality = this.items[i].quality + 1 //If it is within 11 days goes up by 2
-                            }
-                        }
-                        if (this.items[i].sellIn < 6) {
-                            if (this.items[i].quality < 50) {
-                                this.items[i].quality = this.items[i].quality + 1 //If it is within 6 days then goes up by 3
-                            }
-                        }
-                    }
-                }
+            const name = this.items[i].name;
+            const quality = this.items[i].quality;
+            const sellIn = this.items[i].sellIn;
+
+            if (name != 'Sulfuras, Hand of Ragnaros') {
+                this.items[i].sellIn -= 1;
             }
 
-            //Changing SellIn Days
-            if (this.items[i].name != 'Sulfuras, Hand of Ragnaros') {
-                this.items[i].sellIn = this.items[i].sellIn - 1;
-            }
+            switch (name) {
+                case 'Sulfuras, Hand of Ragnaros':
+                    break;
 
-            //If it's past the sellIn date quality goes down faster
-            if (this.items[i].sellIn < 0) {
-                if (this.items[i].name != 'Aged Brie') {
-                    if (this.items[i].name != 'Backstage passes to a TAFKAL80ETC concert') {
-                        if (this.items[i].quality > 0) {
-                            if (this.items[i].name != 'Sulfuras, Hand of Ragnaros') {
-                                this.items[i].quality = this.items[i].quality - 1
-                            }
-                        }
+                case 'Backstage passes to a TAFKAL80ETC concert':
+                    if (sellIn <= 0) {
+                        this.items[i].quality = 0;
+                    } else if (sellIn <= 5) {
+                        this.items[i].quality = Math.min(quality + 3, 50);
+                    } else if (sellIn <= 10) {
+                        this.items[i].quality = Math.min(quality + 2, 50);
                     } else {
-                        //This sets the quality for the ticket to 0;
-                        this.items[i].quality = this.items[i].quality - this.items[i].quality
+                        this.items[i].quality = Math.min(quality + 1, 50);
                     }
-                } else {
-                    //If its Aged Brie
-                    if (this.items[i].quality < 50) { //Max Quality == 50
-                        this.items[i].quality = this.items[i].quality + 1
+                    break;
+
+                case 'Aged Brie':
+                    if (sellIn <= 0) {
+                        this.items[i].quality = Math.min(quality + 2, 50);
+                    } else {
+                        this.items[i].quality = Math.min(quality + 1, 50);
                     }
-                }
+                    break;
+
+                default:
+                    if (sellIn <= 0) {
+                        this.items[i].quality = Math.max(quality - 2, 0);
+                    } else {
+                        this.items[i].quality = Math.max(quality - 1, 0);
+                    }
             }
         }
 
