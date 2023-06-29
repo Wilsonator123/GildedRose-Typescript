@@ -56,6 +56,14 @@ export class GildedRose {
                     }
                     break;
 
+                case 'Conjured Mana Cake':
+                    if (sellIn <= 0) {
+                        this.items[i].quality = Math.max(quality - 4, 0);
+                    } else {
+                        this.items[i].quality = Math.max(quality - 2, 0);
+                    }
+                    break;
+
                 default:
                     if (sellIn <= 0) {
                         this.items[i].quality = Math.max(quality - 2, 0);
