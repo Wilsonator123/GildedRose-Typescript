@@ -62,7 +62,7 @@ describe("Gilded Rose", () => {
         });
 
         //Aged Brie
-        describe("Age Brie", () => {
+        describe("Aged Brie", () => {
             it("Aged Brie (in date)", () => {
                 const goldedRose = new GildedRose([new Item("Aged Brie", 10, 0)]);
                 const items = goldedRose.updateQuality();
@@ -133,6 +133,38 @@ describe("Gilded Rose", () => {
                 const goldedRose = new GildedRose([new Item("Sulfuras, Hand of Ragnaros", 10, 80)]);
                 const items = goldedRose.updateQuality();
                 expect(items[0].quality).to.equal(80);
+            });
+        });
+
+        describe("Conjured Mana Cake", () => {
+            it("should not decrease quality below 0", () => {
+                const gildedRose = new GildedRose([new Item("Conjured Mana Cake", 1, 0)]);
+                gildedRose.updateQuality();
+                expect(gildedRose.items[0].quality).to.equal(0);
+            });
+
+            it("should not decrease quality below 0 when sellIn <= 0", () => {
+                const gildedRose = new GildedRose([new Item("Conjured Mana Cake", 0, 1)]);
+                gildedRose.updateQuality();
+                expect(gildedRose.items[0].quality).to.equal(0);
+            });
+
+            it("should decrease quality by 2 if sellIn is > 0", () => {
+                const gildedRose = new GildedRose([new Item("Conjured Mana Cake", 2, 3)]);
+                gildedRose.updateQuality();
+                expect(gildedRose.items[0].quality).to.equal(1);
+            });
+
+            it("should decrease quality by 4 if sellIn is 0", () => {
+                const gildedRose = new GildedRose([new Item("Conjured Mana Cake", 0, 5)]);
+                gildedRose.updateQuality();
+                expect(gildedRose.items[0].quality).to.equal(1);
+            });
+
+            it("should decrease quality by 4 if sellIn is < 0", () => {
+                const gildedRose = new GildedRose([new Item("Conjured Mana Cake", -1, 5)]);
+                gildedRose.updateQuality();
+                expect(gildedRose.items[0].quality).to.equal(1);
             });
         });
     });
